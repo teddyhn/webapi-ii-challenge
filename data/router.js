@@ -15,7 +15,7 @@ router.post('/', (req, res) => {
             console.log(err);
             res.status(500).json({ error: "There was an error while saving the post to the database." })
         })
-})
+});
 
 router.post('/:id/comments', (req, res) => {
     id = req.params.id;
@@ -33,7 +33,7 @@ router.post('/:id/comments', (req, res) => {
             console.log(err);
             res.status(500).json({ error: "There was an error while saving the comment to the database." })
         })
-})
+});
 
 router.get('/', (req, res) => {
     db.find()
@@ -75,6 +75,27 @@ router.get('/:id/comments', (req, res) => {
             console.log(err);
             res.status(500).json({ error: "The comments information could not be retrieved." })
         })
-})
+});
+
+router.delete('/:id', (req, res) => {
+    id = req.params.id;
+
+    db.findById(id)
+        .then(post => {
+            if (post.length === 0) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            } else res.status(200).send(post);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "The post information could not be retrieved." })
+        });
+
+    db.remove(id)
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "The post could not be removed." })
+        })
+});
 
 module.exports = router;
